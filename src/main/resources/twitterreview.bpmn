@@ -3,7 +3,7 @@
   <bpmn:collaboration id="Collaboration_1rw4mjy">
     <bpmn:participant id="MitarbeiterParticipant" name="Mitarbeiter" processRef="Process_1qparw9" />
     <bpmn:participant id="KommunikationsabteilungParticipant" name="Kommunikationsabteilung" processRef="Process_08fic1u" />
-    <bpmn:participant id="ProzessportalParticipant" name="Prozessportal" processRef="Process_1wgjppn" />
+    <bpmn:participant id="ProzessportalParticipant" name="Prozessportal" processRef="Process_Twitterprozess" />
     <bpmn:messageFlow id="MessageFlow_0esp3cg" sourceRef="TweetErfassenTask" targetRef="TweetErfasstStartEvent" />
     <bpmn:messageFlow id="MessageFlow_1w2i9dj" sourceRef="TweetAnfragePrufenTask1" targetRef="ZuPrufendeTweetAnfrageErhaltenStartEvent" />
     <bpmn:messageFlow id="MessageFlow_0njhmyo" sourceRef="TweetAnfragePrufenTask1" targetRef="UberarbeiteterAntragEingetroffenEvent" />
@@ -110,7 +110,7 @@
     <bpmn:sequenceFlow id="AbgelehntOderGenehmigtSequenceFlow" name="Abgelehnt oder genehmigt" sourceRef="PrufergebnisGateway" targetRef="PrufungErledigtEndEvent" />
     <bpmn:sequenceFlow id="ZuUberarbeitenSequenceFlow" name="Zu überarbeiten" sourceRef="PrufergebnisGateway" targetRef="UberarbeiteterAntragEingetroffenEvent" />
   </bpmn:process>
-  <bpmn:process id="Process_1wgjppn" isExecutable="true">
+  <bpmn:process id="Process_Twitterprozess" isExecutable="true">
     <bpmn:laneSet id="LaneSet_1h5skut">
       <bpmn:lane id="MitarbeiterLane" name="Mitarbeiter">
         <bpmn:flowNodeRef>TweetUberarbeitenTask1</bpmn:flowNodeRef>
