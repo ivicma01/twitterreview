@@ -137,7 +137,7 @@
       <bpmn:incoming>JaSequenceFlow</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1y5jqfq</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="PrufergebnisGateway1" name="Prüfergebnis?" default="GenehmigtSequenceFlow">
+    <bpmn:exclusiveGateway id="PrufergebnisGateway1" name="Prüfergebnis?">
       <bpmn:incoming>SequenceFlow_1y5jqfq</bpmn:incoming>
       <bpmn:outgoing>GenehmigtSequenceFlow</bpmn:outgoing>
       <bpmn:outgoing>ZurUberarbeitungSequenceFlow</bpmn:outgoing>
@@ -212,7 +212,7 @@
     <bpmn:scriptTask id="TweetAnfragePrufenTask1" name="Tweet anfrage prüfen" scriptFormat="JavaScript">
       <bpmn:incoming>NeinSequenceFlow</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1vs59hf</bpmn:outgoing>
-      <bpmn:script></bpmn:script>
+      <bpmn:script>execution.setVariable("checkResult","accepted");</bpmn:script>
     </bpmn:scriptTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
