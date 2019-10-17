@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1x6sh6x" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.3.4">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1x6sh6x" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.3.4">
   <bpmn:collaboration id="Collaboration_1rw4mjy">
     <bpmn:participant id="MitarbeiterParticipant" name="Mitarbeiter" processRef="Process_1qparw9" />
     <bpmn:participant id="KommunikationsabteilungParticipant" name="Kommunikationsabteilung" processRef="Process_08fic1u" />
@@ -167,7 +167,7 @@
       <bpmn:incoming>ZurUberarbeitungSequenceFlow</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0shiuk6</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:startEvent id="TweetErfasstStartEvent" name="Tweet erfasst">
+    <bpmn:startEvent id="TweetErfasstStartEvent" name="Tweet erfasst" camunda:asyncAfter="true">
       <bpmn:outgoing>SequenceFlow_1w59wwl</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:task id="BenutzerinformationenAuslesenTask" name="Benutzerinformationen auslesen">
@@ -179,7 +179,7 @@
       <bpmn:incoming>SequenceFlow_0shiuk6</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0vmbev7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="VerboteneWorterVorhandenGateway" name="Verbotene Wörter vorhanden?" default="NeinSequenceFlow">
+    <bpmn:exclusiveGateway id="VerboteneWorterVorhandenGateway" name="Verbotene Wörter vorhanden?">
       <bpmn:incoming>SequenceFlow_19efn3a</bpmn:incoming>
       <bpmn:outgoing>NeinSequenceFlow</bpmn:outgoing>
       <bpmn:outgoing>JaSequenceFlow</bpmn:outgoing>
@@ -191,20 +191,24 @@
     <bpmn:sequenceFlow id="SequenceFlow_1w59wwl" sourceRef="TweetErfasstStartEvent" targetRef="BenutzerinformationenAuslesenTask" />
     <bpmn:sequenceFlow id="SequenceFlow_0t3a0ng" sourceRef="BenutzerinformationenAuslesenTask" targetRef="ExclusiveGateway_0yx42xh" />
     <bpmn:sequenceFlow id="SequenceFlow_19efn3a" sourceRef="AufVerboteneWorterPrufenTask" targetRef="VerboteneWorterVorhandenGateway" />
-    <bpmn:sequenceFlow id="NeinSequenceFlow" name="Nein" sourceRef="VerboteneWorterVorhandenGateway" targetRef="TweetAnfragePrufenTask1" />
+    <bpmn:sequenceFlow id="NeinSequenceFlow" name="Nein" sourceRef="VerboteneWorterVorhandenGateway" targetRef="TweetAnfragePrufenTask1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${checkResult == "manualCheckRequired"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1vs59hf" sourceRef="TweetAnfragePrufenTask1" targetRef="ExclusiveGateway_1hw0bt1" />
     <bpmn:sequenceFlow id="JaSequenceFlow" name="Ja" sourceRef="VerboteneWorterVorhandenGateway" targetRef="ExclusiveGateway_1hw0bt1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${false}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${checkResult == "rejected"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1y5jqfq" sourceRef="ExclusiveGateway_1hw0bt1" targetRef="PrufergebnisGateway1" />
-    <bpmn:sequenceFlow id="GenehmigtSequenceFlow" name="Genehmigt" sourceRef="PrufergebnisGateway1" targetRef="TweetSendenTask" />
+    <bpmn:sequenceFlow id="GenehmigtSequenceFlow" name="Genehmigt" sourceRef="PrufergebnisGateway1" targetRef="TweetSendenTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${checkResult == "accepted"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="ZurUberarbeitungSequenceFlow" name="zur Überarbeitung" sourceRef="PrufergebnisGateway1" targetRef="TweetUberarbeitenTask1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${false}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${checkResult == "revisable"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_11prwrs" sourceRef="TweetSendenTask" targetRef="ExclusiveGateway_0mo9hun" />
     <bpmn:sequenceFlow id="SequenceFlow_1mfg2zc" sourceRef="ExclusiveGateway_0mo9hun" targetRef="StatusMitteilenTask" />
     <bpmn:sequenceFlow id="AbgelehntSequenceFlow" name="Abgelehnt" sourceRef="PrufergebnisGateway1" targetRef="ExclusiveGateway_0mo9hun">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${false}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${checkResult == "rejected"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0834o5e" sourceRef="StatusMitteilenTask" targetRef="TweetAnfrageBehandeltEndEvent" />
     <bpmn:sequenceFlow id="SequenceFlow_0shiuk6" sourceRef="TweetUberarbeitenTask1" targetRef="ExclusiveGateway_0yx42xh" />
@@ -501,7 +505,7 @@
       <bpmndi:BPMNEdge id="SequenceFlow_0shiuk6_di" bpmnElement="SequenceFlow_0shiuk6">
         <di:waypoint x="680" y="600" />
         <di:waypoint x="440" y="600" />
-        <di:waypoint x="440" y="770" />
+        <di:waypoint x="440" y="775" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_0yx42xh_di" bpmnElement="ExclusiveGateway_0yx42xh" isMarkerVisible="true">
         <dc:Bounds x="415" y="775" width="50" height="50" />
